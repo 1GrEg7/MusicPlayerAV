@@ -21,4 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "MusicPlayerAV"
 include(":app")
- 
+include(":data")
+include(":domain")
+include(":feature")
+include(":core")
