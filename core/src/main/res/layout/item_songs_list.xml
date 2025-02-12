@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
     android:orientation="vertical"
     android:clipToPadding="true"
     android:clipChildren="true">
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,9 +17,7 @@
         android:background="@drawable/list_item_selector"
         android:orientation="horizontal"
         android:clipToPadding="true"
-        android:clipChildren="true"
-
-        >
+        android:clipChildren="true">
 
         <ImageView
             android:id="@+id/imgCover"
@@ -52,8 +50,20 @@
                 android:text="Автор"
                 android:textSize="14sp" />
         </LinearLayout>
-    </LinearLayout>
 
+        <ImageView
+            android:id="@+id/iconDots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:tint="@color/grayyy"
+            android:src="@drawable/vertical_pounts"
+            android:layout_gravity="center_vertical"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+             />
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -61,9 +71,6 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="16dp"
-        android:background="#BDBDBD"
-
-        />
-
+        android:background="#BDBDBD" />
 
 </LinearLayout>

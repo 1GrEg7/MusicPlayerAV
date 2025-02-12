@@ -40,6 +40,10 @@ fun DownloadTrackScreen(context: Context, list: List<Song>) {
             Song("https://i.pinimg.com/originals/36/76/99/36769945f37cb48d1cc24ba4dc724d94.jpg","Новая песня", "Новый автор")
         )
     }
+    fun removePicture(index:Int){
+        songs.removeAt(index)
+    }
+
 
     Column() {
         Column(
@@ -102,6 +106,10 @@ fun DownloadTrackScreen(context: Context, list: List<Song>) {
                     Toast.makeText(context, "Нажата песня: ${clickedSong.title} от ${clickedSong.author}",
                         Toast.LENGTH_SHORT).show()
                     //println("Нажата песня: ${clickedSong.title} от ${clickedSong.author}")
+                },
+                onDeleteClick = { clickedSong,
+                    index -> removePicture(index)
+
                 }
             )
         }
