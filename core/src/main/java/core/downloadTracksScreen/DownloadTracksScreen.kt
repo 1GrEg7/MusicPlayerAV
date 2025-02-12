@@ -1,15 +1,13 @@
-package feature.DownloadTracksScreen
+package core.downloadTracksScreen
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -26,9 +24,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import core.R
 import core.recycleTrackList.Song
 import core.recycleTrackList.SongsList
-import feature.R
+
 
 @Composable
 fun DownloadTrackScreen(context: Context, list: List<Song>) {
@@ -109,7 +108,6 @@ fun DownloadTrackScreen(context: Context, list: List<Song>) {
                 },
                 onDeleteClick = { clickedSong,
                     index -> removePicture(index)
-
                 }
             )
         }

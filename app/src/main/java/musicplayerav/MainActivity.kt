@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import core.recycleTrackList.Song
-import feature.DownloadTracksScreen.DownloadTrackScreen
+import core.downloadTracksScreen.DownloadTrackScreen
 import musicplayerav.ui.theme.MusicPlayerAVTheme
 
 class MainActivity : ComponentActivity() {

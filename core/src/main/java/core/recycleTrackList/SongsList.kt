@@ -20,20 +20,20 @@ fun SongsList(
     modifier: Modifier = Modifier,
     songs: SnapshotStateList<Song>,
     onItemClick: ((Song) -> Unit)? = null,   // Передаём обработчик клика по всей кнопки
-    onDeleteClick: ((Song,Int) -> Unit)? = null // Передаём обработчик клика по удалению песни
+    onDeleteClick: ((Song,Int) -> Unit)? = null, // Передаём обработчик клика по удалению песни
+    showDots: Boolean = true
 ) {
     val context = LocalContext.current
 
     // Создаем и запоминаем адаптер
     val songAdapter = remember {
-        SongListAdapter(songs, onItemClick, onDeleteClick)
+        SongListAdapter(songs, onItemClick, onDeleteClick,showDots)
     }
 
     // При изменении списка обновляем адаптер
     LaunchedEffect(songs) {
         songAdapter.updateSongs(songs)
     }
-    if (songs.size>0){
         AndroidView(
             factory = { ctx ->
                 RecyclerView(ctx).apply {
@@ -43,13 +43,13 @@ fun SongsList(
             },
             modifier = modifier.fillMaxSize()
         )
-    }else{
+
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
             Text("Нет скаченных песен")
         }
-    }
+
 
 }
