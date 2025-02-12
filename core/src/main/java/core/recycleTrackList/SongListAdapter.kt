@@ -15,7 +15,8 @@ import core.R
 class SongListAdapter(
     private var songs: List<Song>,
     private val onItemClick: ((Song) -> Unit)? = null,  // Лямбда для обработки клика по всему элементу
-    private val onDeleteClick: ((Song, Int) -> Unit)? = null // Лямбда для обработки клика по трем точкам
+    private val onDeleteClick: ((Song, Int) -> Unit)? = null, // Лямбда для обработки клика по трем точкам
+    private val showDots: Boolean = true  // Добавляем параметр для управления отображением иконки
 ) : RecyclerView.Adapter<SongListAdapter.SongViewHolder>() {
 
     inner class SongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,43 +27,39 @@ class SongListAdapter(
 
         init {
             itemView.setOnClickListener {
-                // Вызываем лямбду, если она задана, передавая выбранную песню
                 onItemClick?.invoke(songs[adapterPosition])
             }
 
-            // Клик по иконке "три точки"
-            iconDots.setOnClickListener {
-                // Инфлейтим разметку для PopupWindow
-                val popupView = LayoutInflater.from(itemView.context)
-                    .inflate(R.layout.popup_delete_item_button, null)
+            // Если нужно отображать иконку, назначаем обработчик клика
+            if (showDots) {
+                iconDots.setOnClickListener {
+                    val popupView = LayoutInflater.from(itemView.context)
+                        .inflate(R.layout.popup_delete_item_button, null)
 
-                // Инициализируем PopupWindow с размерами, соответствующими содержимому
-                val popupWindow = PopupWindow(
-                    popupView,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    true
-                )
+                    val popupWindow = PopupWindow(
+                        popupView,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        true
+                    )
 
-                popupWindow.elevation = 10f
+                    popupWindow.elevation = 10f
 
-                // Ищем TextView "Удалить" в инфлейченной разметке popup
-                val tvDelete = popupView.findViewById<TextView>(R.id.tvDelete)
-                tvDelete.setOnClickListener {
-                    val position = adapterPosition
-                    if (position != RecyclerView.NO_POSITION) {
-                        // Вызываем лямбду для удаления
-                        onDeleteClick?.invoke(songs[position], position)
-                        notifyItemRemoved(position)
-                        notifyItemRangeChanged(position, getItemCount() - position)
+                    val tvDelete = popupView.findViewById<TextView>(R.id.tvDelete)
+                    tvDelete.setOnClickListener {
+                        val position = adapterPosition
+                        if (position != RecyclerView.NO_POSITION) {
+                            onDeleteClick?.invoke(songs[position], position)
+                            notifyItemRemoved(position)
+                            notifyItemRangeChanged(position, itemCount - position)
+                        }
+                        popupWindow.dismiss()
                     }
-                    // Закрываем PopupWindow после нажатия
-                    popupWindow.dismiss()
-                }
 
-                // Показ PopupWindow рядом с иконкой.
-                // Параметры смещения можно корректировать для нужного расположения
-                popupWindow.showAsDropDown(iconDots, -iconDots.width, 0)
+                    popupWindow.showAsDropDown(iconDots, -iconDots.width, 0)
+                }
+            } else {
+                iconDots.visibility = View.GONE
             }
         }
     }
@@ -75,12 +72,10 @@ class SongListAdapter(
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         val song = songs[position]
-
         Glide.with(holder.itemView.context)
             .load(song.cover)
             .placeholder(R.drawable.note)
             .into(holder.imgCover)
-
         holder.tvTitle.text = song.title
         holder.tvAuthor.text = song.author
     }
