@@ -28,6 +28,7 @@ class SongListAdapter(
         init {
             itemView.setOnClickListener {
                 onItemClick?.invoke(songs[adapterPosition])
+                updateSongs(songs)
             }
 
             // Если нужно отображать иконку, назначаем обработчик клика

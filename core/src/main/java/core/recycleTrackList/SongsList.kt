@@ -3,6 +3,7 @@ package core.recycleTrackList
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,17 +22,17 @@ fun SongsList(
     songs: SnapshotStateList<Song>,
     onItemClick: ((Song) -> Unit)? = null,   // Передаём обработчик клика по всей кнопки
     onDeleteClick: ((Song,Int) -> Unit)? = null, // Передаём обработчик клика по удалению песни
-    showDots: Boolean = true
+    showIcons: Boolean = true
 ) {
     val context = LocalContext.current
 
     // Создаем и запоминаем адаптер
     val songAdapter = remember {
-        SongListAdapter(songs, onItemClick, onDeleteClick,showDots)
+        SongListAdapter(songs, onItemClick, onDeleteClick,showIcons)
     }
 
     // При изменении списка обновляем адаптер
-    LaunchedEffect(songs) {
+    LaunchedEffect(songs.toList()) {
         songAdapter.updateSongs(songs)
     }
         AndroidView(
@@ -49,6 +50,7 @@ fun SongsList(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
             Text("Нет скаченных песен")
+
         }
 
 
