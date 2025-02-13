@@ -29,6 +29,7 @@ import musicplayerav.R
 fun DownloadTracksScreen(
     modifier: Modifier = Modifier,
     context: Context,
+    onItemClick: (Song)->Unit,
     list: List<Song>,
     viewModel: DownloadTracksViewModel = viewModel()
 )
@@ -89,7 +90,7 @@ fun DownloadTracksScreen(
             modifier = Modifier.fillMaxSize().weight(14f),
             context = context,
             list = viewModel.filteredSongs,
-            onItemClick = { viewModel.addSong() },
+            onItemClick = { song -> onItemClick(song) },
             onDeleteClick = { song, index ->
                 viewModel.deleteSong(index)
             }
