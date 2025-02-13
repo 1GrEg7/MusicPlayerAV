@@ -1,13 +1,16 @@
-package core.downloadTracksScreen
+package core
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -24,64 +27,28 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import core.R
+import androidx.lifecycle.ViewModel
 import core.recycleTrackList.Song
 import core.recycleTrackList.SongsList
 
 
 @Composable
-fun DownloadTrackScreen(context: Context, list: List<Song>) {
+fun TracksScreen(
+    modifier: Modifier = Modifier,
+    context: Context,
+    list:SnapshotStateList<Song>,
+    showIcons:Boolean = true,
+    onItemClick:  () -> Unit,
+    onDeleteClick: ((Song,Int) -> Unit )? = null
+) {
 
-    val songs: SnapshotStateList<Song> = remember {  list.toMutableStateList() }
-
-    fun addPicture(){
-        songs.add(
-            Song("https://i.pinimg.com/originals/36/76/99/36769945f37cb48d1cc24ba4dc724d94.jpg","Новая песня", "Новый автор")
-        )
-    }
-    fun removePicture(index:Int){
-        songs.removeAt(index)
-    }
+    val songs: SnapshotStateList<Song> =   list
 
 
-    Column() {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(4f)
-                .padding(top = 20.dp)
-            ,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Скаченные песни",
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold
 
-            )
-        }
-        Column(modifier = Modifier.fillMaxSize().weight(2f)) {
-            Row(
-                modifier = Modifier.fillMaxSize().weight(1f),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = { },
-                    label = { Text(text = "") },
-                    modifier = Modifier.padding(start = 20.dp)
-                )
-                Icon(
-                    modifier = Modifier.padding(start = 10.dp,top = 5.dp, end = 30.dp),
-                    painter = painterResource(id = R.drawable.search_icon),
-                    contentDescription = "Описание изображения",
-                    tint = Color.Gray
-                )
 
-            }
-        }
+
+    Column(modifier = modifier) {
         Column(modifier = Modifier.fillMaxSize().weight(1f)) {
             HorizontalDivider(
                 modifier = Modifier
@@ -101,14 +68,19 @@ fun DownloadTrackScreen(context: Context, list: List<Song>) {
             SongsList(
                 songs = songs,
                 onItemClick = { clickedSong ->
-                    addPicture()
+                    onItemClick()
                     Toast.makeText(context, "Нажата песня: ${clickedSong.title} от ${clickedSong.author}",
                         Toast.LENGTH_SHORT).show()
-                    //println("Нажата песня: ${clickedSong.title} от ${clickedSong.author}")
+                    Log.d("111111",songs.joinToString())
                 },
                 onDeleteClick = { clickedSong,
-                    index -> removePicture(index)
-                }
+                    index ->
+                    if (onDeleteClick != null) {
+                        onDeleteClick(clickedSong,index)
+                    }
+
+                },
+                showIcons = showIcons
             )
         }
 
