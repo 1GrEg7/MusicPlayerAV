@@ -1,0 +1,6 @@
+int drawable manage_search_icon 0x0
+int drawable music_list_icon 0x0
+int drawable vertical_pounts 0x0
+int string api_tracks 0x0
+int string app_name 0x0
+int string download_tracks 0x0

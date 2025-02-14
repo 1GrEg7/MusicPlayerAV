@@ -22,15 +22,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import core.TracksScreen
-import core.recycleTrackList.Song
+import core.recycleTrackList.Track
 import musicplayerav.R
 
 @Composable
 fun DownloadTracksScreen(
     modifier: Modifier = Modifier,
     context: Context,
-    onItemClick: (Song)->Unit,
-    list: List<Song>,
+    onItemClick: (Track)->Unit,
+    list: List<Track>,
     viewModel: DownloadTracksViewModel = viewModel()
 )
 {
@@ -89,7 +89,7 @@ fun DownloadTracksScreen(
         TracksScreen(
             modifier = Modifier.fillMaxSize().weight(14f),
             context = context,
-            list = viewModel.filteredSongs,
+            list = viewModel.filteredTracks,
             onItemClick = { song -> onItemClick(song) },
             onDeleteClick = { song, index ->
                 viewModel.deleteSong(index)

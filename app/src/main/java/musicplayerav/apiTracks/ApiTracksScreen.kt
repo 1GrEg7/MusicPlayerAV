@@ -23,14 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import core.TracksScreen
-import core.recycleTrackList.Song
+import core.recycleTrackList.Track
 import musicplayerav.R
 
 @Composable
 fun ApiTracksScreen(
     modifier: Modifier = Modifier,
     context: Context,
-    list: SnapshotStateList<Song>,
+    list: SnapshotStateList<Track>,
     viewModel: ApiTracksViewModel = viewModel()
 )
 {
