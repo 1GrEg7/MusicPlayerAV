@@ -25,7 +25,7 @@ fun TracksScreen(
     list:SnapshotStateList<Track>,
     showIcons:Boolean = true,
     onItemClick:  (Track) -> Unit,
-    onDeleteClick: ((Track, Int) -> Unit )? = null
+    onDeleteClick: ((Track,Int) -> Unit )? = null
 ) {
 
     val tracks: SnapshotStateList<Track> =   list

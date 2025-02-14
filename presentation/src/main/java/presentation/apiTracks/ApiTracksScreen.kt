@@ -1,4 +1,4 @@
-package musicplayerav.downloadTracks
+package presentation.apiTracks
 
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
@@ -12,26 +12,28 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import core.TracksScreen
 import core.recycleTrackList.Track
-import musicplayerav.R
+import presentation.R
 
 @Composable
-fun DownloadTracksScreen(
+fun ApiTracksScreen(
     modifier: Modifier = Modifier,
     context: Context,
-    onItemClick: (Track)->Unit,
-    list: List<Track>,
-    viewModel: DownloadTracksViewModel = viewModel()
+    viewModel: ApiTracksViewModel = viewModel()
 )
 {
     Column(modifier = modifier) {
@@ -46,7 +48,7 @@ fun DownloadTracksScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text =  stringResource(R.string.download_tracks),
+                text =  stringResource(R.string.api_tracks),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
 
@@ -63,11 +65,14 @@ fun DownloadTracksScreen(
                     contentAlignment = Alignment.Center
                 ){
                     OutlinedTextField(
-                        value = viewModel.searchField.value,
+                        value =  viewModel.searchField.value,
                         onValueChange = {
                             viewModel.searchField.value = it
-                            viewModel.filterItems(it)
+                            if (it.length>0){
+                                viewModel.getSearchedTracks(it)
+                            }
                                         },
+                        singleLine = true,
                         label = { Text(text = "") },
                         modifier = Modifier.fillMaxWidth().padding(start = 20.dp)
                     )
@@ -85,18 +90,28 @@ fun DownloadTracksScreen(
                 }
             }
         }
-
-        TracksScreen(
-            modifier = Modifier.fillMaxSize().weight(14f),
-            context = context,
-            list = viewModel.filteredTracks,
-            onItemClick = { song -> onItemClick(song) },
-            onDeleteClick = { song, index ->
-                viewModel.deleteSong(index)
+        if (viewModel.filteredTracks.size>0){
+            TracksScreen(
+                modifier = Modifier.fillMaxSize().weight(14f),
+                context = context,
+                list = viewModel.filteredTracks,
+                onItemClick = {},
+                showIcons = false
+            )
+        }else{
+            Box(
+                modifier = Modifier.fillMaxSize().weight(14f),
+                contentAlignment = Alignment.Center
+                )
+            {
+                Text(
+                    text = "По запросу ничего не найденно(",
+                    color = Color.Gray.copy(alpha = 0.3f),
+                    fontSize = 30.sp,
+                    textAlign = TextAlign.Center
+                )
             }
-        )
+        }
+
     }
-
-
-
 }

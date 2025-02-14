@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -25,13 +27,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import core.recycleTrackList.Track
+import data.trackData.TracksRepoImpl
 import musicplayerav.Navigation.Screen
 import musicplayerav.Navigation.TopLevelRoute
-import musicplayerav.apiTracks.ApiTracksScreen
-import musicplayerav.apiTracks.ApiTracksViewModel
 import musicplayerav.downloadTracks.DownloadTracksScreen
-import musicplayerav.downloadTracks.DownloadTracksViewModel
 import musicplayerav.songScreen.SongScreen
+import presentation.apiTracks.ApiTracksScreen
+import presentation.apiTracks.ApiTracksViewModel
+
 
 
 val list = listOf(
@@ -58,10 +61,10 @@ class MainActivity : ComponentActivity() {
         setContent {
 
 
-           // MusicPlayerAVTheme {
 
-            val downloadTracksViewModel: DownloadTracksViewModel = viewModel()
-            val apiTracksViewModel: ApiTracksViewModel = viewModel()
+            val downloadTracksViewModel: presentation.downloadTracks.DownloadTracksViewModel = viewModel()
+            val apiTracksViewModel = ApiTracksViewModel(TracksRepoImpl)
+            apiTracksViewModel.getChartTracks()
 
 
             val navController = rememberNavController()
@@ -125,11 +128,17 @@ class MainActivity : ComponentActivity() {
                 ){
                     composable(
                         Screen.DownloadTracksScreen.route,
-//                        popEnterTransition = { EnterTransition.None },
-//                        popExitTransition = { ExitTransition.None },
-//                        enterTransition = { EnterTransition.None },
-//                        exitTransition = { ExitTransition.None }
+                        popEnterTransition = { EnterTransition.None },
+                        popExitTransition = { ExitTransition.None },
+                        enterTransition = { EnterTransition.None },
+                        exitTransition = { ExitTransition.None }
                     ){
+                        DownloadTracksScreen(
+                            context = baseContext,
+                            list = list,
+                            viewModel = downloadTracksViewModel,
+                            onItemClick = {}
+                        )
                         DownloadTracksScreen(
                             context = baseContext,
                             list =  list, viewModel = downloadTracksViewModel,
@@ -142,19 +151,18 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(
                         Screen.ApiTracksScreen.route,
-//                        popEnterTransition = { EnterTransition.None },
-//                        popExitTransition = { ExitTransition.None },
-//                        enterTransition = { EnterTransition.None },
-//                        exitTransition = { ExitTransition.None }
+                        popEnterTransition = { EnterTransition.None },
+                        popExitTransition = { ExitTransition.None },
+                        enterTransition = { EnterTransition.None },
+                        exitTransition = { ExitTransition.None }
                     ){
-                        ApiTracksScreen(context = baseContext, list = mutableStateListOf<Track>(), viewModel = apiTracksViewModel)
+                        ApiTracksScreen(
+                            context = baseContext,
+                            viewModel = apiTracksViewModel
+                        )
                     }
 
                     composable(
-//                        popEnterTransition = { EnterTransition.None },
-//                        popExitTransition = { ExitTransition.None },
-//                        enterTransition = { EnterTransition.None },
-//                        exitTransition = { ExitTransition.None },
                         route = "downloadDetails?songName={songName}&singerName={singerName}&albumName={albumName}&cover={cover}",
                         arguments = listOf(
                         navArgument("songName") { type = NavType.StringType },
@@ -176,7 +184,7 @@ class MainActivity : ComponentActivity() {
 
                 }
             }
-            //}
+
         }
     }
 }

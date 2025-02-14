@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "domain"
+    namespace = "presentation"
     compileSdk = 35
 
     defaultConfig {
@@ -23,9 +23,15 @@ android {
             )
         }
     }
+    buildFeatures {
+        compose = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -37,8 +43,16 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(project(":core"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(project(":core"))
+    implementation(project(":domain"))
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation ("androidx.compose.material:material:1.7.5")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 }
