@@ -1,4 +1,4 @@
-package musicplayerav.apiTracks
+package presentation.downloadTracks
 
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,15 +22,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import core.TracksScreen
-import core.recycleTrackList.Song
-import musicplayerav.R
+import core.recycleTrackList.Track
+import presentation.R
 
 @Composable
-fun ApiTracksScreen(
+fun DownloadTracksScreen(
     modifier: Modifier = Modifier,
     context: Context,
-    list: SnapshotStateList<Song>,
-    viewModel: ApiTracksViewModel = viewModel()
+    list: List<Track>,
+    viewModel: DownloadTracksViewModel = viewModel()
 )
 {
     Column(modifier = modifier) {
@@ -46,7 +45,7 @@ fun ApiTracksScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text =  stringResource(R.string.api_tracks),
+                text =  stringResource(R.string.download_tracks),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
 
@@ -63,8 +62,11 @@ fun ApiTracksScreen(
                     contentAlignment = Alignment.Center
                 ){
                     OutlinedTextField(
-                        value =  viewModel.searchField.value,
-                        onValueChange = {viewModel.searchField.value = it },
+                        value = viewModel.searchField.value,
+                        onValueChange = {
+                            viewModel.searchField.value = it
+                            viewModel.filterItems(it)
+                                        },
                         label = { Text(text = "") },
                         modifier = Modifier.fillMaxWidth().padding(start = 20.dp)
                     )
@@ -86,9 +88,14 @@ fun ApiTracksScreen(
         TracksScreen(
             modifier = Modifier.fillMaxSize().weight(14f),
             context = context,
-            list = list,
-            onItemClick = {},
-            showIcons = false
+            list = viewModel.filteredTracks,
+            onItemClick = { viewModel.addSong() },
+            onDeleteClick = { song, index ->
+                viewModel.deleteSong(index)
+            }
         )
     }
+
+
+
 }
