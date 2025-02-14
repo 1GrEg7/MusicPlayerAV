@@ -1,0 +1,7 @@
+presentation
+drawable manage_search_icon
+drawable music_list_icon
+drawable vertical_pounts
+string api_tracks
+string app_name
+string download_tracks

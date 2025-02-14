@@ -30,8 +30,8 @@ import presentation.downloadTracks.DownloadTracksViewModel
 fun DownloadTracksScreen(
     modifier: Modifier = Modifier,
     context: Context,
+    onItemClick: (Track)->Unit,
     list: List<Track>,
-    onItemClick: (Track) -> Unit,
     viewModel: DownloadTracksViewModel = viewModel()
 )
 {
@@ -91,7 +91,7 @@ fun DownloadTracksScreen(
             modifier = Modifier.fillMaxSize().weight(14f),
             context = context,
             list = viewModel.filteredTracks,
-            onItemClick = onItemClick,
+            onItemClick = { song -> onItemClick(song) },
             onDeleteClick = { song, index ->
                 viewModel.deleteSong(index)
             }
