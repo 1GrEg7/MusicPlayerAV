@@ -24,8 +24,8 @@ fun TracksScreen(
     context: Context,
     list:SnapshotStateList<Track>,
     showIcons:Boolean = true,
-    onItemClick:  () -> Unit,
-    onDeleteClick: ((Track, Int) -> Unit )? = null
+    onItemClick:  (Track) -> Unit,
+    onDeleteClick: ((Track,Int) -> Unit )? = null
 ) {
 
     val tracks: SnapshotStateList<Track> =   list
@@ -54,7 +54,7 @@ fun TracksScreen(
             SongsList(
                 tracks = tracks,
                 onItemClick = { clickedSong ->
-                    onItemClick()
+                    onItemClick(clickedSong)
                     Toast.makeText(context, "Нажата песня: ${clickedSong.title} от ${clickedSong.author}",
                         Toast.LENGTH_SHORT).show()
                     Log.d("111111",tracks.joinToString())

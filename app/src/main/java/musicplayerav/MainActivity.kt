@@ -20,17 +20,21 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import core.recycleTrackList.Track
 import data.trackData.TracksRepoImpl
 import musicplayerav.Navigation.Screen
 import musicplayerav.Navigation.TopLevelRoute
+import musicplayerav.downloadTracks.DownloadTracksScreen
+import musicplayerav.songScreen.SongScreen
 import presentation.apiTracks.ApiTracksScreen
 import presentation.apiTracks.ApiTracksViewModel
-import presentation.downloadTracks.DownloadTracksScreen
+
 
 
 val list = listOf(
@@ -68,40 +72,51 @@ class MainActivity : ComponentActivity() {
                 TopLevelRoute("Скаченное", Screen.DownloadTracksScreen.route, R.drawable.music_list_icon),
                 TopLevelRoute("Поиск", Screen.ApiTracksScreen.route, R.drawable.manage_search_icon)
             )
+
+            val routesWithBottomBar = listOf(
+                Screen.DownloadTracksScreen.route,
+                Screen.ApiTracksScreen.route
+            )
+
             Scaffold(
                 bottomBar = {
-                    BottomNavigation(
-                        backgroundColor = colorResource(id = R.color.lightBlue)
-                    ){
-                        val navBackStackEntry by navController.currentBackStackEntryAsState()
-                        val currentDestination = navBackStackEntry?.destination
-                        topLevelRoutes.forEach{ topLevelRoute ->
-                            val isSelected = currentDestination?.route == topLevelRoute.route
-                            BottomNavigationItem(
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(topLevelRoute.icon),
-                                        contentDescription = topLevelRoute.name,
-                                        tint = if (isSelected){
-                                            Color.White
-                                        }else{
-                                            Color.Black
-                                        }
-                                    )
-                                },
-                                label = { Text(topLevelRoute.name) },
-                                selected = isSelected,
-                                onClick = {
-                                    navController.navigate(topLevelRoute.route) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-                            )
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    val currentDestination = navBackStackEntry?.destination
+                    val currentRoute = currentDestination?.route
 
+                    if (currentRoute in routesWithBottomBar){
+                        BottomNavigation(
+                            backgroundColor = colorResource(id = R.color.lightBlue)
+                        ){
+
+                            topLevelRoutes.forEach{ topLevelRoute ->
+                                val isSelected = currentDestination?.route == topLevelRoute.route
+                                BottomNavigationItem(
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(topLevelRoute.icon),
+                                            contentDescription = topLevelRoute.name,
+                                            tint = if (isSelected){
+                                                Color.White
+                                            }else{
+                                                Color.Black
+                                            }
+                                        )
+                                    },
+                                    label = { Text(topLevelRoute.name) },
+                                    selected = isSelected,
+                                    onClick = {
+                                        navController.navigate(topLevelRoute.route) {
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
+                                )
+
+                            }
                         }
                     }
                 }
@@ -121,8 +136,18 @@ class MainActivity : ComponentActivity() {
                         DownloadTracksScreen(
                             context = baseContext,
                             list = list,
-                            viewModel = downloadTracksViewModel
+                            viewModel = downloadTracksViewModel,
+                            onItemClick = {}
                         )
+                        DownloadTracksScreen(
+                            context = baseContext,
+                            list =  list, viewModel = downloadTracksViewModel,
+                            onItemClick ={ song ->
+
+                                navController.navigate(
+                                    "downloadDetails?songName=${song.title}&singerName=${song.author}&albumName=${song.albumName}&cover=${song.cover}"
+                                )
+                        })
                     }
                     composable(
                         Screen.ApiTracksScreen.route,
@@ -136,6 +161,27 @@ class MainActivity : ComponentActivity() {
                             viewModel = apiTracksViewModel
                         )
                     }
+
+                    composable(
+                        route = "downloadDetails?songName={songName}&singerName={singerName}&albumName={albumName}&cover={cover}",
+                        arguments = listOf(
+                        navArgument("songName") { type = NavType.StringType },
+                        navArgument("singerName") { type = NavType.StringType },
+                        navArgument("albumName") { type = NavType.StringType },
+                        navArgument("cover") { type = NavType.IntType; defaultValue = 0 },
+
+                    )
+                    ) { backStackEntry ->
+                    SongScreen(
+                        toBackScreen = { navController.popBackStack() },
+                        songName = backStackEntry.arguments?.getString("songName") ?: "",
+                        singerName = backStackEntry.arguments?.getString("singerName") ?: "",
+                        albumName = backStackEntry.arguments?.getString("albumName") ?: "",
+                        cover = backStackEntry.arguments?.getInt("cover")
+                    )
+                }
+
+
                 }
             }
 
