@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,19 +62,20 @@ fun SongScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(30.dp)
+                    .padding(40.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
             ){
                 Image(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.clip(RoundedCornerShape(16.dp)).fillMaxSize(),
 //                    painter = if (cover!=null){
 //                        painterResource(cover)
 //                    }else{
 //                        painterResource(core.R.drawable.note)
 //                    },
                     painter = painterResource(core.R.drawable.note),
-                    contentDescription = "Обложка трека"
+                    contentDescription = "Обложка трека",
+                    contentScale = ContentScale.Crop
                 )
             }
         }

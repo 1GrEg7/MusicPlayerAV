@@ -65,9 +65,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
 
-
-           // MusicPlayerAVTheme {
-
             val downloadTracksViewModel: DownloadTracksViewModel = viewModel()
             val apiTracksViewModel: ApiTracksViewModel = viewModel()
 
@@ -133,16 +130,11 @@ class MainActivity : ComponentActivity() {
                 ){
                     composable(
                         Screen.DownloadTracksScreen.route,
-//                        popEnterTransition = { EnterTransition.None },
-//                        popExitTransition = { ExitTransition.None },
-//                        enterTransition = { EnterTransition.None },
-//                        exitTransition = { ExitTransition.None }
                     ){
                         DownloadTracksScreen(
                             context = baseContext,
                             list =  list, viewModel = downloadTracksViewModel,
                             onItemClick ={ song ->
-
                                 navController.navigate(
                                     "downloadDetails?songName=${song.title}&singerName=${song.author}&albumName=${song.albumName}&cover=${song.cover}"
                                 )
@@ -150,19 +142,10 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(
                         Screen.ApiTracksScreen.route,
-//                        popEnterTransition = { EnterTransition.None },
-//                        popExitTransition = { ExitTransition.None },
-//                        enterTransition = { EnterTransition.None },
-//                        exitTransition = { ExitTransition.None }
                     ){
                         ApiTracksScreen(context = baseContext, list = mutableStateListOf<Song>(), viewModel = apiTracksViewModel)
                     }
-
                     composable(
-//                        popEnterTransition = { EnterTransition.None },
-//                        popExitTransition = { ExitTransition.None },
-//                        enterTransition = { EnterTransition.None },
-//                        exitTransition = { ExitTransition.None },
                         route = "downloadDetails?songName={songName}&singerName={singerName}&albumName={albumName}&cover={cover}",
                         arguments = listOf(
                         navArgument("songName") { type = NavType.StringType },
@@ -184,7 +167,6 @@ class MainActivity : ComponentActivity() {
 
                 }
             }
-            //}
         }
     }
 }
