@@ -13,9 +13,9 @@ import com.bumptech.glide.Glide
 import core.R
 
 class SongListAdapter(
-    private var songs: List<Song>,
-    private val onItemClick: ((Song) -> Unit)? = null,  // Лямбда для обработки клика по всему элементу
-    private val onDeleteClick: ((Song, Int) -> Unit)? = null, // Лямбда для обработки клика по трем точкам
+    private var tracks: List<Track>,
+    private val onItemClick: ((Track) -> Unit)? = null,  // Лямбда для обработки клика по всему элементу
+    private val onDeleteClick: ((Track, Int) -> Unit)? = null, // Лямбда для обработки клика по трем точкам
     private val showDots: Boolean = true  // Добавляем параметр для управления отображением иконки
 ) : RecyclerView.Adapter<SongListAdapter.SongViewHolder>() {
 
@@ -27,8 +27,8 @@ class SongListAdapter(
 
         init {
             itemView.setOnClickListener {
-                onItemClick?.invoke(songs[adapterPosition])
-                updateSongs(songs)
+                onItemClick?.invoke(tracks[adapterPosition])
+                updateSongs(tracks)
             }
 
             // Если нужно отображать иконку, назначаем обработчик клика
@@ -50,7 +50,7 @@ class SongListAdapter(
                     tvDelete.setOnClickListener {
                         val position = adapterPosition
                         if (position != RecyclerView.NO_POSITION) {
-                            onDeleteClick?.invoke(songs[position], position)
+                            onDeleteClick?.invoke(tracks[position], position)
                             notifyItemRemoved(position)
                             notifyItemRangeChanged(position, itemCount - position)
                         }
@@ -72,7 +72,7 @@ class SongListAdapter(
     }
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-        val song = songs[position]
+        val song = tracks[position]
         Glide.with(holder.itemView.context)
             .load(song.cover)
             .placeholder(R.drawable.note)
@@ -81,10 +81,10 @@ class SongListAdapter(
         holder.tvAuthor.text = song.author
     }
 
-    override fun getItemCount(): Int = songs.size
+    override fun getItemCount(): Int = tracks.size
 
-    fun updateSongs(newSongs: List<Song>) {
-        songs = newSongs
+    fun updateSongs(newTracks: List<Track>) {
+        tracks = newTracks
         notifyDataSetChanged()
     }
 }

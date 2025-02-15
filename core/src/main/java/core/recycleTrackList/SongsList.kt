@@ -1,9 +1,9 @@
 package core.recycleTrackList
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,21 +19,21 @@ import androidx.compose.ui.viewinterop.AndroidView
 @Composable
 fun SongsList(
     modifier: Modifier = Modifier,
-    songs: SnapshotStateList<Song>,
-    onItemClick: ((Song) -> Unit)? = null,   // Передаём обработчик клика по всей кнопки
-    onDeleteClick: ((Song,Int) -> Unit)? = null, // Передаём обработчик клика по удалению песни
+    tracks: SnapshotStateList<Track>,
+    onItemClick: ((Track) -> Unit)? = null,   // Передаём обработчик клика по всей кнопки
+    onDeleteClick: ((Track, Int) -> Unit)? = null, // Передаём обработчик клика по удалению песни
     showIcons: Boolean = true
 ) {
     val context = LocalContext.current
 
     // Создаем и запоминаем адаптер
     val songAdapter = remember {
-        SongListAdapter(songs, onItemClick, onDeleteClick,showIcons)
+        SongListAdapter(tracks, onItemClick, onDeleteClick,showIcons)
     }
 
     // При изменении списка обновляем адаптер
-    LaunchedEffect(songs.toList()) {
-        songAdapter.updateSongs(songs)
+    LaunchedEffect(tracks.toList()) {
+        songAdapter.updateSongs(tracks)
     }
         AndroidView(
             factory = { ctx ->
@@ -45,10 +45,9 @@ fun SongsList(
             modifier = modifier.fillMaxSize()
         )
 
-        Column(
+        Box(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
+            contentAlignment = Alignment.Center) {
             Text("Нет скаченных песен")
 
         }

@@ -40,7 +40,9 @@
                 android:layout_weight="1"
                 android:text="Название песни"
                 android:textStyle="bold"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/tvAuthor"
@@ -48,6 +50,8 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="Автор"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textSize="14sp" />
         </LinearLayout>
 
