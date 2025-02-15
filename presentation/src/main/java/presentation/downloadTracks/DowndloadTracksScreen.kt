@@ -1,6 +1,7 @@
 package musicplayerav.downloadTracks
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,13 +31,12 @@ import presentation.downloadTracks.DownloadTracksViewModel
 @Composable
 fun DownloadTracksScreen(
     modifier: Modifier = Modifier,
-    context: Context,
     onItemClick: (Track)->Unit,
     list: List<Track>,
     viewModel: DownloadTracksViewModel = viewModel()
 )
 {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.background(Color.White)) {
 
         Column(
             modifier = Modifier
@@ -89,7 +90,7 @@ fun DownloadTracksScreen(
 
         TracksScreen(
             modifier = Modifier.fillMaxSize().weight(14f),
-            context = context,
+            context = LocalContext.current,
             list = viewModel.filteredTracks,
             onItemClick = { song -> onItemClick(song) },
             onDeleteClick = { song, index ->

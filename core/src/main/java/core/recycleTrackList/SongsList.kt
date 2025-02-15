@@ -1,6 +1,7 @@
 package core.recycleTrackList
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
@@ -44,10 +45,9 @@ fun SongsList(
             modifier = modifier.fillMaxSize()
         )
 
-        Column(
+        Box(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
+            contentAlignment = Alignment.Center) {
             Text("Нет скаченных песен")
 
         }

@@ -1,6 +1,7 @@
 package presentation.apiTracks
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,10 +34,11 @@ import presentation.R
 fun ApiTracksScreen(
     modifier: Modifier = Modifier,
     context: Context,
-    viewModel: ApiTracksViewModel = viewModel()
+    viewModel: ApiTracksViewModel = viewModel(),
+    onItemClick: (Track) -> Unit
 )
 {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.background(Color.White)) {
 
         Column(
             modifier = Modifier
@@ -95,7 +97,7 @@ fun ApiTracksScreen(
                 modifier = Modifier.fillMaxSize().weight(14f),
                 context = context,
                 list = viewModel.filteredTracks,
-                onItemClick = {},
+                onItemClick = onItemClick,
                 showIcons = false
             )
         }else{

@@ -1,4 +1,4 @@
-package musicplayerav.songScreen
+package presentation.songScreen
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Slider

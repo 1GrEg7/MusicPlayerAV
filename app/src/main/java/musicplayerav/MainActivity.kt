@@ -12,6 +12,7 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
@@ -28,10 +29,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import core.recycleTrackList.Track
 import data.trackData.TracksRepoImpl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import musicplayerav.Navigation.Screen
 import musicplayerav.Navigation.TopLevelRoute
 import musicplayerav.downloadTracks.DownloadTracksScreen
-import musicplayerav.songScreen.SongScreen
+import presentation.songScreen.SongScreen
 import presentation.apiTracks.ApiTracksScreen
 import presentation.apiTracks.ApiTracksViewModel
 
@@ -58,13 +61,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+
         setContent {
-
-
-
             val downloadTracksViewModel: presentation.downloadTracks.DownloadTracksViewModel = viewModel()
             val apiTracksViewModel = ApiTracksViewModel(TracksRepoImpl)
-            apiTracksViewModel.getChartTracks()
+            LaunchedEffect(Unit) {
+                apiTracksViewModel.getChartTracks()
+            }
+
 
 
             val navController = rememberNavController()
@@ -134,18 +139,11 @@ class MainActivity : ComponentActivity() {
                         exitTransition = { ExitTransition.None }
                     ){
                         DownloadTracksScreen(
-                            context = baseContext,
-                            list = list,
-                            viewModel = downloadTracksViewModel,
-                            onItemClick = {}
-                        )
-                        DownloadTracksScreen(
-                            context = baseContext,
                             list =  list, viewModel = downloadTracksViewModel,
-                            onItemClick ={ song ->
+                            onItemClick ={ track ->
 
                                 navController.navigate(
-                                    "downloadDetails?songName=${song.title}&singerName=${song.author}&albumName=${song.albumName}&cover=${song.cover}"
+                                    "downloadDetails?songName=${track.title}&singerName=${track.author}&albumName=${track.albumName}&cover=${track.cover}"
                                 )
                         })
                     }
@@ -158,7 +156,12 @@ class MainActivity : ComponentActivity() {
                     ){
                         ApiTracksScreen(
                             context = baseContext,
-                            viewModel = apiTracksViewModel
+                            viewModel = apiTracksViewModel,
+                            onItemClick = {track ->
+                                navController.navigate(
+                                    "downloadDetails?songName=${track.title}&singerName=${track.author}&albumName=${track.albumName}&cover=${track.cover}"
+                                )
+                            }
                         )
                     }
 
@@ -169,8 +172,9 @@ class MainActivity : ComponentActivity() {
                         navArgument("singerName") { type = NavType.StringType },
                         navArgument("albumName") { type = NavType.StringType },
                         navArgument("cover") { type = NavType.IntType; defaultValue = 0 },
+                        ),
 
-                    )
+
                     ) { backStackEntry ->
                     SongScreen(
                         toBackScreen = { navController.popBackStack() },
@@ -178,8 +182,8 @@ class MainActivity : ComponentActivity() {
                         singerName = backStackEntry.arguments?.getString("singerName") ?: "",
                         albumName = backStackEntry.arguments?.getString("albumName") ?: "",
                         cover = backStackEntry.arguments?.getInt("cover")
-                    )
-                }
+                        )
+                    }
 
 
                 }

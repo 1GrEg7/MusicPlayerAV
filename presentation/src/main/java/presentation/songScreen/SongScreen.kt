@@ -1,4 +1,4 @@
-package musicplayerav.songScreen
+package presentation.songScreen
 
 import android.media.Image
 import androidx.compose.foundation.Image
@@ -20,12 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import musicplayerav.R
+import presentation.R
 
 //@Preview(showBackground = true)
 //@Composable
@@ -45,7 +45,8 @@ fun SongScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.LightGray.copy(alpha = 0.5f))
+            .background(Color(0xFFE3E3E3))
+            //.background(Color.LightGray.copy(alpha = 0.5f))
     ) {
 
         Row(modifier = Modifier.fillMaxSize().weight(1f)) {
@@ -73,6 +74,7 @@ fun SongScreen(
 //                        painterResource(core.R.drawable.note)
 //                    },
                     painter = painterResource(core.R.drawable.note),
+                    contentScale = ContentScale.Crop,
                     contentDescription = "Обложка трека"
                 )
             }

@@ -1,7 +1,13 @@
 R_DEF: Internal format may change without notice
 local
+drawable arrow_back_icon
+drawable download_track_icon
 drawable manage_search_icon
 drawable music_list_icon
+drawable next_track_icon
+drawable pause_music_icon
+drawable play_music_icon
+drawable previous_track_icon
 drawable vertical_pounts
 string api_tracks
 string app_name

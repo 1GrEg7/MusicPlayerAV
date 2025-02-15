@@ -28,9 +28,6 @@ fun TracksScreen(
     onDeleteClick: ((Track,Int) -> Unit )? = null
 ) {
 
-    val tracks: SnapshotStateList<Track> =   list
-
-
 
 
 
@@ -52,19 +49,18 @@ fun TracksScreen(
                 .clipToBounds()
         ) {
             SongsList(
-                tracks = tracks,
+                tracks = list,
                 onItemClick = { clickedSong ->
                     onItemClick(clickedSong)
                     Toast.makeText(context, "Нажата песня: ${clickedSong.title} от ${clickedSong.author}",
                         Toast.LENGTH_SHORT).show()
-                    Log.d("111111",tracks.joinToString())
+                    Log.d("111111",list.joinToString())
                 },
                 onDeleteClick = { clickedSong,
                     index ->
                     if (onDeleteClick != null) {
                         onDeleteClick(clickedSong,index)
                     }
-
                 },
                 showIcons = showIcons
             )
