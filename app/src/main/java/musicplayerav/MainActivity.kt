@@ -1,5 +1,6 @@
 package musicplayerav
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -30,6 +31,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import core.recycleTrackList.Track
+import data.db.DatabaseProvider
+import data.db.TrackDbRepoImpl
 import data.trackData.TracksRepoImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -40,23 +43,9 @@ import musicplayerav.player.MusicService
 import presentation.songScreen.SongScreen
 import presentation.apiTracks.ApiTracksScreen
 import presentation.apiTracks.ApiTracksViewModel
+import presentation.downloadTracks.DownloadTracksViewModel
 import presentation.songScreen.SongScreenViewModel
 
-
-val list = listOf(
-    Track(1,"https://images.wallpaperscraft.com/image/single/lake_mountain_tree_36589_2650x1600.jpg", "Песня 1", "Автор 1"),
-    Track(2,"https://ya.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimages.wallpaperscraft.com%2Fimage%2Fsingle%2Flake_mountain_tree_36589_2650x1600.jpg&lr=213&pos=0&rpt=simage&text=%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8", "Песня 2", "Автор 2"),
-    Track(3,"https://ya.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimages.wallpaperscraft.com%2Fimage%2Fsingle%2Flake_mountain_tree_36589_2650x1600.jpg&lr=213&pos=0&rpt=simage&text=%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8", "Песня 1", "Автор 3"),
-    Track(4,"https://ya.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimages.wallpaperscraft.com%2Fimage%2Fsingle%2Flake_mountain_tree_36589_2650x1600.jpg&lr=213&pos=0&rpt=simage&text=%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8", "Песня 2", "Автор 4"),
-    Track(5,"https://ya.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimages.wallpaperscraft.com%2Fimage%2Fsingle%2Flake_mountain_tree_36589_2650x1600.jpg&lr=213&pos=0&rpt=simage&text=%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8", "Песня 1", "Автор 5"),
-    Track(6,"https://ya.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimages.wallpaperscraft.com%2Fimage%2Fsingle%2Flake_mountain_tree_36589_2650x1600.jpg&lr=213&pos=0&rpt=simage&text=%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8", "Песня 2", "Автор 6"),
-    Track(7,"https://ya.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimages.wallpaperscraft.com%2Fimage%2Fsingle%2Flake_mountain_tree_36589_2650x1600.jpg&lr=213&pos=0&rpt=simage&text=%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8", "Песня 1", "Автор 1"),
-    Track(8,"https://ya.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimages.wallpaperscraft.com%2Fimage%2Fsingle%2Flake_mountain_tree_36589_2650x1600.jpg&lr=213&pos=0&rpt=simage&text=%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8", "Песня 2", "Автор 2"),
-    Track(9,"https://ya.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimages.wallpaperscraft.com%2Fimage%2Fsingle%2Flake_mountain_tree_36589_2650x1600.jpg&lr=213&pos=0&rpt=simage&text=%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8", "Песня 1", "Автор 3"),
-    Track(10,"https://ya.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimages.wallpaperscraft.com%2Fimage%2Fsingle%2Flake_mountain_tree_36589_2650x1600.jpg&lr=213&pos=0&rpt=simage&text=%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8", "Песня 2", "Автор 4"),
-    Track(11,"https://ya.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimages.wallpaperscraft.com%2Fimage%2Fsingle%2Flake_mountain_tree_36589_2650x1600.jpg&lr=213&pos=0&rpt=simage&text=%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8", "Песня 1", "Автор 5"),
-    Track(12,"https://images.wallpaperscraft.com/image/single/lake_mountain_tree_36589_2650x1600.jpg", "Песня 2", "Автор 6")
-)
 
 
 
@@ -66,13 +55,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val trackDao = DatabaseProvider.provideTrackDao(this)
+        val trackDbRepoImpl = TrackDbRepoImpl(trackDao)
 
         setContent {
-            val downloadTracksViewModel: presentation.downloadTracks.DownloadTracksViewModel = viewModel()
+            val downloadTracksViewModel = DownloadTracksViewModel(trackDbRepoImpl)
             val apiTracksViewModel = ApiTracksViewModel(TracksRepoImpl)
-            val songScreenViewModel = SongScreenViewModel(TracksRepoImpl)
+            val songScreenViewModel = SongScreenViewModel(apiTracksViewModel,TracksRepoImpl)
             LaunchedEffect(Unit) {
                 apiTracksViewModel.getChartTracks()
+
+                downloadTracksViewModel.fetchAllTracks()
+
             }
 
 
@@ -144,10 +138,10 @@ class MainActivity : ComponentActivity() {
                         exitTransition = { ExitTransition.None }
                     ){
                         DownloadTracksScreen(
-                            list =  list, viewModel = downloadTracksViewModel,
+                            viewModel = downloadTracksViewModel,
                             onItemClick ={ track ->
                                 navController.navigate(
-                                    "downloadDetails?id=${track.id}&songName=${track.title}&singerName=${track.author}&albumName=${track.albumName}&cover_big=${track.cover}&preview=${track.preview}"
+                                    "downloadDetails?id=${track.id}&cover_big=${track.cover}&preview=${track.preview}&indexTrack=${0}"
                                 )
                         })
                     }
@@ -161,23 +155,21 @@ class MainActivity : ComponentActivity() {
                         ApiTracksScreen(
                             context = baseContext,
                             viewModel = apiTracksViewModel,
-                            onItemClick = {track ->
+                            onItemClick = {track, indexTrack ->
                                 navController.navigate(
-                                    "downloadDetails?id=${track.id}&songName=${track.title}&singerName=${track.author}&albumName=${track.albumName}&cover_big=${track.cover}&preview=${track.preview}"
+                                    "downloadDetails?id=${track.id}&cover_big=${track.cover}&preview=${track.preview}&indexTrack=${indexTrack}"
                                 )
                             }
                         )
                     }
 
                     composable(
-                        route = "downloadDetails?id={id}&songName={songName}&singerName={singerName}&albumName={albumName}&cover_big={cover_big}&preview={preview}",
+                        route = "downloadDetails?id={id}&cover_big={cover_big}&preview={preview}&indexTrack={indexTrack}",
                         arguments = listOf(
                         navArgument("id") { type = NavType.LongType; defaultValue = -1 },
-                        navArgument("songName") { type = NavType.StringType },
-                        navArgument("singerName") { type = NavType.StringType },
-                        navArgument("albumName") { type = NavType.StringType },
                         navArgument("cover_big") { type = NavType.StringType },
                         navArgument("preview") { type = NavType.StringType },
+                        navArgument("indexTrack") { type = NavType.IntType }
                         ),
 
 
@@ -185,9 +177,6 @@ class MainActivity : ComponentActivity() {
                     SongScreen(
                         toBackScreen = { navController.popBackStack() },
                         trackId = backStackEntry.arguments?.getLong("id") ?: -1,
-                        songName = backStackEntry.arguments?.getString("songName") ?: "",
-                        singerName = backStackEntry.arguments?.getString("singerName") ?: "",
-                        albumName = backStackEntry.arguments?.getString("albumName") ?: "",
                         cover = backStackEntry.arguments?.getString("cover_big")?: "",
                         preview = backStackEntry.arguments?.getString("preview") ?: "",
                         viewModel = songScreenViewModel,
@@ -199,7 +188,11 @@ class MainActivity : ComponentActivity() {
                         },
                         onRewindTo = { timePosition ->
                             onRewindTrackTo(timePosition)
-                        }
+                        },
+                        onDownloadTrack = {track ->
+                            downloadTracksViewModel.addTrack(track)
+                        } ,
+                        trackIndexOfList = backStackEntry.arguments?.getInt("indexTrack") ?: -1
                         )
                     }
 
@@ -237,6 +230,11 @@ class MainActivity : ComponentActivity() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        val intent = Intent(this, MusicService::class.java)
+        stopService(intent)
+    }
 }
 
 

@@ -14,9 +14,9 @@ import core.R
 
 class SongListAdapter(
     private var tracks: List<Track>,
-    private val onItemClick: ((Track) -> Unit)? = null,  // Лямбда для обработки клика по всему элементу
-    private val onDeleteClick: ((Track, Int) -> Unit)? = null, // Лямбда для обработки клика по трем точкам
-    private val showDots: Boolean = true  // Добавляем параметр для управления отображением иконки
+    private val onItemClick: ((Track,Int) -> Unit)? = null,  // Лямбда для обработки клика по всему элементу
+    private val onDeleteClick: ((Track) -> Unit)? = null, // Лямбда для обработки клика удаления
+    private val showDots: Boolean = true  // Добавляем параметр для управления отображением иконок удаления
 ) : RecyclerView.Adapter<SongListAdapter.SongViewHolder>() {
 
     inner class SongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -27,11 +27,10 @@ class SongListAdapter(
 
         init {
             itemView.setOnClickListener {
-                onItemClick?.invoke(tracks[adapterPosition])
+                onItemClick?.invoke(tracks[adapterPosition],adapterPosition)
                 updateSongs(tracks)
             }
 
-            // Если нужно отображать иконку, назначаем обработчик клика
             if (showDots) {
                 iconDots.setOnClickListener {
                     val popupView = LayoutInflater.from(itemView.context)
@@ -50,7 +49,7 @@ class SongListAdapter(
                     tvDelete.setOnClickListener {
                         val position = adapterPosition
                         if (position != RecyclerView.NO_POSITION) {
-                            onDeleteClick?.invoke(tracks[position], position)
+                            onDeleteClick?.invoke(tracks[position])
                             notifyItemRemoved(position)
                             notifyItemRangeChanged(position, itemCount - position)
                         }

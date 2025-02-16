@@ -13,9 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +32,7 @@ fun ApiTracksScreen(
     modifier: Modifier = Modifier,
     context: Context,
     viewModel: ApiTracksViewModel = viewModel(),
-    onItemClick: (Track) -> Unit
+    onItemClick: (Track, Int) -> Unit
 )
 {
     Column(modifier = modifier.background(Color.White)) {

@@ -1,25 +1,20 @@
 package musicplayerav.player
 
-import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.IBinder
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import musicplayerav.MainActivity
-import musicplayerav.R
 
 
-class MusicService() : Service() {
+class MusicService(): Service() {
 
     private var mediaPlayer: MediaPlayer? = null
 
@@ -105,8 +100,6 @@ class MusicService() : Service() {
             mediaPlayer = MediaPlayer().apply {
                 setAudioStreamType(AudioManager.STREAM_MUSIC)
                 Log.d("iiiiii",currentMp3Url.toString() )
-
-
                 setDataSource(currentMp3Url)
                 isLooping = false
 
@@ -115,32 +108,22 @@ class MusicService() : Service() {
                     updateNotification()
                 }
                 setOnCompletionListener {
-                    // Логика по окончанию воспроизведения, например, обновление уведомления или переход к следующему треку
                     updateNotification()
                 }
                 prepareAsync()
             }
         }
-
-
-    }
-
-    private fun resetMediaPlayer() {
-        mediaPlayer?.apply {
-            stop()
-            reset()
-            release()
-        }
-        mediaPlayer = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer?.release()
         mediaPlayer = null
+        stopSelf()
     }
 
     private fun buildNotification(): Notification {
+
         // Intent для перехода в активность приложения
         val mainIntent = Intent(this, MainActivity::class.java)
         val pendingMainIntent = PendingIntent.getActivity(
@@ -175,7 +158,6 @@ class MusicService() : Service() {
             .setContentIntent(pendingMainIntent)
             .addAction(android.R.drawable.ic_media_pause, "Пауза", pauseIntent)
             .addAction(android.R.drawable.ic_media_play, "Продолжить", playIntent)
-            //.addAction(android.R.drawable.ic_media_ff, "Пропустить", skipIntent) // Добавьте кнопку для перехода к следующему треку, если необходимо
             .setOngoing(mediaPlayer?.isPlaying ?: false)
             .build()
     }
@@ -198,9 +180,7 @@ class MusicService() : Service() {
     }
 
     private fun getMainPendingIntent(): PendingIntent {
-        // Создаем Intent для открытия главной Activity приложения
         val intent = Intent(this, MainActivity::class.java).apply {
-            // Очищаем предыдущие экземпляры Activity и переиспользуем существующий, если он уже запущен
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         // PendingIntent для перехода в Activity с обновлением предыдущего Intent
@@ -208,7 +188,6 @@ class MusicService() : Service() {
     }
 
     private fun getActionPendingIntent(action: String): PendingIntent {
-        // Создаем Intent для выполнения действия в сервисе (например, play, pause, rewind)
         val intent = Intent(this, MusicService::class.java).apply {
             this.action = action
         }

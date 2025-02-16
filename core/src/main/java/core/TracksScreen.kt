@@ -24,12 +24,9 @@ fun TracksScreen(
     context: Context,
     list:SnapshotStateList<Track>,
     showIcons:Boolean = true,
-    onItemClick:  (Track) -> Unit,
-    onDeleteClick: ((Track,Int) -> Unit )? = null
+    onItemClick:  (Track, Int) -> Unit,
+    onDeleteClick: ((Track) -> Unit )? = null
 ) {
-
-
-
 
     Column(modifier = modifier) {
         Column(modifier = Modifier.fillMaxSize().weight(1f)) {
@@ -50,21 +47,19 @@ fun TracksScreen(
         ) {
             SongsList(
                 tracks = list,
-                onItemClick = { clickedSong ->
-                    onItemClick(clickedSong)
+                onItemClick = { clickedSong, indexTrack ->
+                    onItemClick(clickedSong, indexTrack)
                     Toast.makeText(context, "Нажата песня: ${clickedSong.title} от ${clickedSong.author}",
                         Toast.LENGTH_SHORT).show()
                     Log.d("111111",list.joinToString())
                 },
-                onDeleteClick = { clickedSong,
-                    index ->
+                onDeleteClick = { clickedSong ->
                     if (onDeleteClick != null) {
-                        onDeleteClick(clickedSong,index)
+                        onDeleteClick(clickedSong)
                     }
                 },
                 showIcons = showIcons
             )
         }
-
     }
 }

@@ -16,16 +16,12 @@ object TracksRepoImpl: TracksRepo {
         return withContext(Dispatchers.IO){
             try {
                 val trackResponse = service.getTrackById(id)
-                Log.d("222222chartResponse",trackResponse.toString())
                 // Преобразуем список TrackDTO в Track из Domain
                 val track = trackResponse.toDomain()
-
-                Log.d("222222tracks",track.toString())
 
                 track
 
             } catch (e: Exception) {
-                Log.d("222222",e.stackTrace.contentToString())
                 Track()
             }
         }
@@ -35,14 +31,11 @@ object TracksRepoImpl: TracksRepo {
         return withContext(Dispatchers.IO){
             try {
                 val chartResponse = service.getChart()
-                Log.d("222222chartResponse",chartResponse.toString())
                 // Преобразуем список TrackDTO в Track из Domain
                 val tracks = chartResponse.tracks.data.map { it.toDomain() }
 
-                Log.d("222222tracks",tracks.toString())
                 tracks
             } catch (e: Exception) {
-                Log.d("222222",e.stackTrace.contentToString())
                 listOf() // Возвращаем пустой список в случае ошибки
             }
         }
@@ -52,14 +45,13 @@ object TracksRepoImpl: TracksRepo {
         return withContext(Dispatchers.IO){
             try {
                 val searchResponse = service.search(textSearch)
-                Log.d("222222SearchResponse",searchResponse.toString())
                 // Преобразуем список TrackDTO в Track из Domain
                 val tracks = searchResponse.data.map { it.toDomain() }
 
-                Log.d("222222Searchtracks",tracks.toString())
+
                 tracks
             } catch (e: Exception) {
-                Log.d("222222Search",e.stackTrace.contentToString())
+
                 listOf() // Возвращаем пустой список в случае ошибки
             }
         }

@@ -1,6 +1,6 @@
 package musicplayerav.downloadTracks
 
-import android.content.Context
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,7 +32,6 @@ import presentation.downloadTracks.DownloadTracksViewModel
 fun DownloadTracksScreen(
     modifier: Modifier = Modifier,
     onItemClick: (Track)->Unit,
-    list: List<Track>,
     viewModel: DownloadTracksViewModel = viewModel()
 )
 {
@@ -92,9 +91,9 @@ fun DownloadTracksScreen(
             modifier = Modifier.fillMaxSize().weight(14f),
             context = LocalContext.current,
             list = viewModel.filteredTracks,
-            onItemClick = { song -> onItemClick(song) },
-            onDeleteClick = { song, index ->
-                viewModel.deleteSong(index)
+            onItemClick = { song,trackIndex -> onItemClick(song) },
+            onDeleteClick = { track ->
+                viewModel.removeTrack(track)
             }
         )
     }

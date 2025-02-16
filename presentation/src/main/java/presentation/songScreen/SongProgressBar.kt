@@ -21,9 +21,8 @@ fun SongProgressBar(
     onRewindTo: (Int)->Unit,
     isPlaying: Boolean
 ) {
-    // Состояние для положения ползунка от 0f до 1f
+
     var sliderPosition by remember { mutableStateOf(0f) }
-    // Флаг, сигнализирующий о том, что пользователь перетаскивает ползунок
     var isDragging by remember { mutableStateOf(false) }
     var totalMillis = duration * 1000
 
@@ -54,7 +53,7 @@ fun SongProgressBar(
             isDragging = true
         },
         onValueChangeFinished = {
-            // Как только пользователь закончил перетаскивать, можно продолжить автоматическую анимацию, если не достигнут конец
+            // Как только пользователь закончил перетаскивать, можно продолжить анимацию, если не достигли конца
             onRewindTo( (sliderPosition*duration).toInt())
             isDragging = false
         },
