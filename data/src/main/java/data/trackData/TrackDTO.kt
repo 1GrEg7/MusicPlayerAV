@@ -19,6 +19,7 @@ data class TrackDTO (
     @SerialName("artist")
     val artist: ArtistDTO,
     @SerialName("album")
-    val album: AlbumDTO
+    val album: AlbumDTO,
+
 
 )

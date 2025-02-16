@@ -4,7 +4,7 @@ import core.recycleTrackList.Track
 
 interface TracksRepo {
 
-    suspend fun fetchTrack(id:Int): Track
+    suspend fun fetchTrack(id:Long): Track
 
     suspend fun fetchChartTracks(): List<Track>
 
