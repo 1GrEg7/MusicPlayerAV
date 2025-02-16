@@ -9,6 +9,6 @@ data class AlbumDTO(
     val id: Long,
     @SerialName("title")
     val title: String,
-    @SerialName("cover")
-    val cover: String
+    @SerialName("cover_big")
+    val cover_big: String
 )

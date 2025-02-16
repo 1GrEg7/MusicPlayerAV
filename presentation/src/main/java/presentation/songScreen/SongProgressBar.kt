@@ -17,27 +17,34 @@ import kotlinx.coroutines.delay
 @Composable
 fun SongProgressBar(
     duration: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onRewindTo: (Int)->Unit,
+    isPlaying: Boolean
 ) {
     // Состояние для положения ползунка от 0f до 1f
     var sliderPosition by remember { mutableStateOf(0f) }
     // Флаг, сигнализирующий о том, что пользователь перетаскивает ползунок
     var isDragging by remember { mutableStateOf(false) }
+    var totalMillis = duration * 1000
 
     // Если пользователь не двигает ползунок и ещё не достигнут конец, анимировано заполняем прогресс
-    LaunchedEffect(isDragging, sliderPosition) {
-        if (!isDragging && sliderPosition < 1f) {
-            // Вычисляем шаг обновления в миллисекундах
-            // Интервал для 60 кадров в секунду
-            val frameDelay = 16L
-            // Общее время в миллисекундах
-            val totalMillis = duration * 1000
-            // На сколько увеличивается значение за один кадр
-            val increment = frameDelay.toFloat() / totalMillis
-            delay(frameDelay) // задержка перед следующим обновлением
-            sliderPosition = (sliderPosition + increment).coerceAtMost(1f)
+    if (!isPlaying){
+        LaunchedEffect(isDragging, sliderPosition) {
+            if (!isDragging && sliderPosition < 1f) {
+
+                // Вычисляем шаг обновления в миллисекундах
+                // Интервал для 60 кадров в секунду
+                val frameDelay = 16L
+
+
+                // На сколько увеличивается значение за один кадр
+                val increment = frameDelay.toFloat() / totalMillis
+
+                sliderPosition = (sliderPosition + increment).coerceAtMost(1f)
+            }
         }
     }
+
 
     Slider(
         modifier = modifier.fillMaxSize(),
@@ -48,6 +55,7 @@ fun SongProgressBar(
         },
         onValueChangeFinished = {
             // Как только пользователь закончил перетаскивать, можно продолжить автоматическую анимацию, если не достигнут конец
+            onRewindTo( (sliderPosition*duration).toInt())
             isDragging = false
         },
         colors = SliderDefaults.colors(

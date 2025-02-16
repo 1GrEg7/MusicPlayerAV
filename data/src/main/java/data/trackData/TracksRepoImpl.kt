@@ -12,12 +12,26 @@ object TracksRepoImpl: TracksRepo {
 
     private val service = createRetrofitService()
 
-    override suspend fun fetchTrack(id: Int): Track {
-        TODO("Not yet implemented")
+    override suspend fun fetchTrack(id: Long): Track {
+        return withContext(Dispatchers.IO){
+            try {
+                val trackResponse = service.getTrackById(id)
+                Log.d("222222chartResponse",trackResponse.toString())
+                // Преобразуем список TrackDTO в Track из Domain
+                val track = trackResponse.toDomain()
+
+                Log.d("222222tracks",track.toString())
+
+                track
+
+            } catch (e: Exception) {
+                Log.d("222222",e.stackTrace.contentToString())
+                Track()
+            }
+        }
     }
 
     override suspend fun fetchChartTracks(): List<Track> {
-
         return withContext(Dispatchers.IO){
             try {
                 val chartResponse = service.getChart()
