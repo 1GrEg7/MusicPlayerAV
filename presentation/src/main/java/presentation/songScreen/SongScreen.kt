@@ -58,7 +58,6 @@ fun SongScreen(
 
     LaunchedEffect(key1 = preview) { // при изменение ссылки на трек меняем информацию о треке
         viewModel.trackIndex.value = trackIndexOfList
-        viewModel.getMp3Duration(preview)
         viewModel.currentPreview.value = preview
         launch{
             viewModel.getTrackInfoById(trackId)

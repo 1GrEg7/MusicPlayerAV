@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import core.recycleTrackList.Track
+import domain.tracksDbInfo.InsertTrackDbUseCase
 import domain.tracksInfo.GetTrackByIdUseCase
 import domain.tracksInfo.TracksRepo
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +28,12 @@ class SongScreenViewModel(apiTracksViewModel: ApiTracksViewModel,tracksRepoImpl:
     val apiViewModel = apiTracksViewModel
 
     val trackRepo: TracksRepo = tracksRepoImpl
+
+
+
+
+
+
 
 
     fun getTrackInfoById(trackId:Long){
@@ -64,39 +71,5 @@ class SongScreenViewModel(apiTracksViewModel: ApiTracksViewModel,tracksRepoImpl:
 
     val endTimeTrack = mutableStateOf("00:00")
 
-    fun getMp3Duration(url: String) { // нашли время кусочка трека
-        viewModelScope.launch(Dispatchers.IO){
-            val mmr = MediaMetadataRetriever()
-            try {
-                mmr.setDataSource(url, HashMap())
-                // Получаем длительность в миллисекундах
-                val durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                val minutes = durationStr?.toLong()?.div(1000)?.div(60)
-                val seconds = durationStr?.toLong()?.div(1000)?.mod(60)
-                if (minutes != null) {
-                    var textMinutes = ""
-                    var textSeconds = ""
-                    if (minutes<10){
-                        textMinutes = "0${minutes}"
-                    }else{
-                        textMinutes = minutes.toString()
-                    }
-                    if (seconds != null) {
-                        if (seconds<10){
-                            textSeconds = "0${minutes}"
-                        }else{
-                            textSeconds = seconds.toString()
-                        }
-                    }else{
-                        endTimeTrack.value =  "00:00"
-                    }
-                    endTimeTrack.value =  "${textMinutes}:${textSeconds}"
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                mmr.release()
-            }
-        }
-    }
+
 }

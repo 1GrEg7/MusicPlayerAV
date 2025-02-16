@@ -49,9 +49,6 @@ fun TracksScreen(
                 tracks = list,
                 onItemClick = { clickedSong, indexTrack ->
                     onItemClick(clickedSong, indexTrack)
-                    Toast.makeText(context, "Нажата песня: ${clickedSong.title} от ${clickedSong.author}",
-                        Toast.LENGTH_SHORT).show()
-                    Log.d("111111",list.joinToString())
                 },
                 onDeleteClick = { clickedSong ->
                     if (onDeleteClick != null) {

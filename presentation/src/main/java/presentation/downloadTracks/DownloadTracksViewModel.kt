@@ -20,10 +20,8 @@ class DownloadTracksViewModel( trackDbRepo: TrackDbRepo): ViewModel() {
 
     val searchField = mutableStateOf("")
 
+    val trackRepo = trackDbRepo
 
-    val getAllTracksDbUseCase = GetAllTracksDbUseCase(trackDbRepo)
-    val deleteTrackDbUseCase= DeleteTrackDbUseCase(trackDbRepo)
-    val insertTrackDbUseCase = InsertTrackDbUseCase(trackDbRepo)
 
     val filteredTracks: SnapshotStateList<Track> = _allTracks.value.toMutableStateList()
 
@@ -33,24 +31,25 @@ class DownloadTracksViewModel( trackDbRepo: TrackDbRepo): ViewModel() {
             _allTracks.value.forEach {
                 if (it.title.contains(query, true) || it.author.contains(query, true)) filteredTracks.add(it)
             }
-            Log.d("1111111",  filteredTracks.joinToString())
+
         }
     }
+
     fun addTrack(track: Track) {
         viewModelScope.launch {
-            insertTrackDbUseCase.invoke(track)
+            trackRepo.insertTrack(track)
             fetchAllTracks() // Обновляем список после добавления
         }
     }
     fun removeTrack(track: Track) {
         viewModelScope.launch {
-            deleteTrackDbUseCase.invoke(track)
+            trackRepo.deleteTrack(track)
             fetchAllTracks() // Обновляем список после удаления
         }
     }
      fun fetchAllTracks() {
         viewModelScope.launch {
-            _allTracks.value =  getAllTracksDbUseCase.invoke()
+            _allTracks.value = trackRepo.getAllTracks()
             filterItems("")
         }
     }

@@ -1,6 +1,5 @@
 package musicplayerav
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -17,12 +16,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -30,23 +27,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import core.recycleTrackList.Track
 import data.db.DatabaseProvider
 import data.db.TrackDbRepoImpl
 import data.trackData.TracksRepoImpl
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import musicplayerav.Navigation.Screen
 import musicplayerav.Navigation.TopLevelRoute
 import musicplayerav.downloadTracks.DownloadTracksScreen
 import musicplayerav.player.MusicService
-import presentation.songScreen.SongScreen
 import presentation.apiTracks.ApiTracksScreen
 import presentation.apiTracks.ApiTracksViewModel
 import presentation.downloadTracks.DownloadTracksViewModel
+import presentation.songScreen.SongScreen
 import presentation.songScreen.SongScreenViewModel
-
-
 
 
 class MainActivity : ComponentActivity() {
@@ -221,7 +213,6 @@ class MainActivity : ComponentActivity() {
 
     }
     fun onRewindTrackTo(timePosition:Int){
-        Log.d("66666666", timePosition.toString())
         val intent = Intent(this, MusicService::class.java).apply {
             action = MusicService.ACTION_REWIND
             putExtra(MusicService.REWIND_TIME, timePosition*1000)
