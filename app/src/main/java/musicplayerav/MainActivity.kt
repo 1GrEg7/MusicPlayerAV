@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -30,6 +31,12 @@ import androidx.navigation.navArgument
 import data.db.DatabaseProvider
 import data.db.TrackDbRepoImpl
 import data.trackData.TracksRepoImpl
+import domain.tracksDbInfo.DeleteTrackDbUseCase
+import domain.tracksDbInfo.GetAllTracksDbUseCase
+import domain.tracksDbInfo.InsertTrackDbUseCase
+import domain.tracksInfo.GetChartTracksUseCase
+import domain.tracksInfo.GetTrackByIdUseCase
+import domain.tracksInfo.SearchTracksUseCase
 import musicplayerav.Navigation.Screen
 import musicplayerav.Navigation.TopLevelRoute
 import musicplayerav.downloadTracks.DownloadTracksScreen
@@ -43,17 +50,55 @@ import presentation.songScreen.SongScreenViewModel
 
 class MainActivity : ComponentActivity() {
 
+    private lateinit var downloadTracksViewModel: DownloadTracksViewModel
+    private lateinit var apiTracksViewModel:ApiTracksViewModel
+    private lateinit var songScreenViewModel: SongScreenViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         val trackDao = DatabaseProvider.provideTrackDao(this)
         val trackDbRepoImpl = TrackDbRepoImpl(trackDao)
+        val tracksRepoImpl = TracksRepoImpl
 
+        val getAllTracksDbUseCase = GetAllTracksDbUseCase(trackDbRepoImpl)
+        val insertTrackDbUseCase = InsertTrackDbUseCase(trackDbRepoImpl)
+        val deleteTrackDbUseCase = DeleteTrackDbUseCase(trackDbRepoImpl)
+
+        val getChartTracksUseCase = GetChartTracksUseCase(tracksRepoImpl)
+        val searchTracksUseCase = SearchTracksUseCase(tracksRepoImpl)
+        val getTrackByIdUseCase = GetTrackByIdUseCase(tracksRepoImpl)
+
+        val downloadTracksViewModelFactory = DownloadTracksViewModel.
+            DownloadTracksViewModelFactory(
+                getAllTracksDbUseCase = getAllTracksDbUseCase,
+                insertTrackDbUseCase = insertTrackDbUseCase,
+                deleteTrackDbUseCase = deleteTrackDbUseCase
+            )
+        val apiTracksViewModelFactory = ApiTracksViewModel.
+            ApiTracksViewModelFactory(
+                getChartTracksUseCase = getChartTracksUseCase,
+                searchTracksUseCase = searchTracksUseCase
+            )
+
+
+
+        downloadTracksViewModel = ViewModelProvider(this, downloadTracksViewModelFactory)
+            .get(DownloadTracksViewModel::class.java)
+
+        apiTracksViewModel = ViewModelProvider(this,apiTracksViewModelFactory)
+            .get(ApiTracksViewModel::class.java)
+
+        val  songScreenViewModelFactory = SongScreenViewModel.
+        SongScreenViewModelFactory(
+            apiViewModel = apiTracksViewModel,
+            getTrackByIdUseCase = getTrackByIdUseCase
+        )
+
+        songScreenViewModel = ViewModelProvider(this, songScreenViewModelFactory)
+            .get(SongScreenViewModel::class.java)
         setContent {
-            val downloadTracksViewModel = DownloadTracksViewModel(trackDbRepoImpl)
-            val apiTracksViewModel = ApiTracksViewModel(TracksRepoImpl)
-            val songScreenViewModel = SongScreenViewModel(apiTracksViewModel,TracksRepoImpl)
             LaunchedEffect(Unit) {
                 apiTracksViewModel.getChartTracks()
 
@@ -181,7 +226,7 @@ class MainActivity : ComponentActivity() {
                         onRewindTo = { timePosition ->
                             onRewindTrackTo(timePosition)
                         },
-                        onDownloadTrack = {track ->
+                        onDownloadTrack = { track ->
                             downloadTracksViewModel.addTrack(track)
                         } ,
                         trackIndexOfList = backStackEntry.arguments?.getInt("indexTrack") ?: -1

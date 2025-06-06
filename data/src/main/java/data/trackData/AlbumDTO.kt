@@ -1,14 +1,15 @@
 package data.trackData
 
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class AlbumDTO(
-    @SerialName("id")
+    @SerializedName("id")
     val id: Long,
-    @SerialName("title")
+    @SerializedName("title")
     val title: String,
-    @SerialName("cover_big")
+    @SerializedName("cover_big")
     val cover_big: String
 )

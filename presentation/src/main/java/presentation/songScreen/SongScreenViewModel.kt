@@ -4,6 +4,7 @@ import android.media.MediaMetadataRetriever
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import core.recycleTrackList.Track
 import domain.tracksDbInfo.InsertTrackDbUseCase
@@ -16,7 +17,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import presentation.apiTracks.ApiTracksViewModel
 
-class SongScreenViewModel(apiTracksViewModel: ApiTracksViewModel,tracksRepoImpl:TracksRepo): ViewModel() {
+class SongScreenViewModel(
+    private val apiViewModel: ApiTracksViewModel,
+    private val getTrackByIdUseCase: GetTrackByIdUseCase
+): ViewModel() {
 
     private val _trackInfo =  MutableStateFlow<Track>(Track())
 
@@ -25,9 +29,9 @@ class SongScreenViewModel(apiTracksViewModel: ApiTracksViewModel,tracksRepoImpl:
         _trackInfo.update { newTrack }
     }
 
-    val apiViewModel = apiTracksViewModel
+    //val apiViewModel = apiTracksViewModel
 
-    val trackRepo: TracksRepo = tracksRepoImpl
+    //val trackRepo: TracksRepo = tracksRepoImpl
 
 
 
@@ -37,9 +41,8 @@ class SongScreenViewModel(apiTracksViewModel: ApiTracksViewModel,tracksRepoImpl:
 
 
     fun getTrackInfoById(trackId:Long){
-        val getTrackById =  GetTrackByIdUseCase(trackRepo)
         viewModelScope.launch {
-            val track = getTrackById.invoke(trackId)
+            val track = getTrackByIdUseCase.invoke(trackId)
             _trackInfo.update { track }
         }
     }
@@ -70,6 +73,21 @@ class SongScreenViewModel(apiTracksViewModel: ApiTracksViewModel,tracksRepoImpl:
     val currentPreview = mutableStateOf("")
 
     val endTimeTrack = mutableStateOf("00:00")
+
+
+    class SongScreenViewModelFactory(
+        private val apiViewModel: ApiTracksViewModel,
+        private val getTrackByIdUseCase: GetTrackByIdUseCase
+    ) : ViewModelProvider.Factory {
+
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(SongScreenViewModel::class.java)) {
+                return SongScreenViewModel(apiViewModel, getTrackByIdUseCase) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
+    }
 
 
 }

@@ -47,20 +47,26 @@ fun DownloadTracksScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text =  stringResource(R.string.download_tracks),
+                text = stringResource(R.string.playlist_text),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
 
             )
         }
-        Column(modifier = Modifier.fillMaxSize().weight(2f)) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .weight(2f)) {
             Row(
-                modifier = Modifier.fillMaxSize().weight(1f),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Box(
-                    modifier = Modifier.fillMaxSize().weight(7f),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(7f),
                     contentAlignment = Alignment.Center
                 ){
                     OutlinedTextField(
@@ -70,15 +76,21 @@ fun DownloadTracksScreen(
                             viewModel.filterItems(it)
                                         },
                         label = { Text(text = "") },
-                        modifier = Modifier.fillMaxWidth().padding(start = 20.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp)
                     )
                 }
                 Box(
-                    modifier = Modifier.fillMaxSize().weight(2f),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(2f),
                     contentAlignment = Alignment.TopCenter
                 ){
                     Icon(
-                        modifier = Modifier.fillMaxSize().padding(start = 10.dp,top = 5.dp, end = 30.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 10.dp, top = 5.dp, end = 30.dp),
                         painter = painterResource(id = core.R.drawable.search_icon),
                         contentDescription = "Описание изображения",
                         tint = Color.Gray
@@ -88,7 +100,9 @@ fun DownloadTracksScreen(
         }
 
         TracksScreen(
-            modifier = Modifier.fillMaxSize().weight(14f),
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(14f),
             context = LocalContext.current,
             list = viewModel.filteredTracks,
             onItemClick = { song,trackIndex -> onItemClick(song) },

@@ -1,3 +1,4 @@
+int drawable add_song 0x0
 int drawable arrow_back_icon 0x0
 int drawable download_track_icon 0x0
 int drawable manage_search_icon 0x0
@@ -10,3 +11,4 @@ int drawable vertical_pounts 0x0
 int string api_tracks 0x0
 int string app_name 0x0
 int string download_tracks 0x0
+int string playlist_text 0x0

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">MusicPlayerAV</string>
-    <string name="download_tracks">Скаченные песни</string>
+    <string name="download_tracks">Мой плейлист</string>
     <string name="api_tracks">Найти песню</string>
+    <string name="playlist_text">Мой плейлист</string>
 </resources>

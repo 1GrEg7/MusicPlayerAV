@@ -133,7 +133,7 @@ fun SongScreen(
                     modifier = Modifier.clickable {
                        onDownloadTrack(viewModel.trackInfo.value)
                     },
-                    painter = painterResource(R.drawable.download_track_icon),
+                    painter = painterResource(R.drawable.add_song),
                     contentDescription = "Кнопка скачивания песни",
                     tint = Color.Black.copy(alpha = 0.7f)
                 )

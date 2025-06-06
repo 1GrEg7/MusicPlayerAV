@@ -1,7 +1,16 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    //alias(libs.plugins.kotlin.android)
     id("org.jetbrains.kotlin.kapt")
+    id ("org.jetbrains.kotlin.android")
+}
+
+configurations.all {
+    resolutionStrategy {
+        // Принудительно используем Kotlin 1.9.22
+        force( "org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
+        force ("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
+    }
 }
 
 android {
@@ -25,17 +34,20 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "21"
     }
 }
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
+    implementation ("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
+
+//    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(project(":core"))
@@ -48,13 +60,14 @@ dependencies {
 
     //Retrofit
     implementation (libs.retrofit)
+    //implementation ("com.squareup.retrofit2:retrofit:2.11.0")
     implementation (libs.converter.gson)
 
     // OkHttp (HTTP-клиент)
     implementation (libs.okhttp)
     implementation (libs.logging.interceptor)
 
-    implementation ("androidx.room:room-runtime:2.6.1")
-    kapt ("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
+    implementation ("androidx.room:room-runtime:2.7.1")
+    kapt ("androidx.room:room-compiler:2.7.1")
+    implementation("androidx.room:room-ktx:2.7.1")
 }

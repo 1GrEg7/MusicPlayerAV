@@ -1,4 +1,5 @@
 presentation
+drawable add_song
 drawable arrow_back_icon
 drawable download_track_icon
 drawable manage_search_icon
@@ -11,3 +12,4 @@ drawable vertical_pounts
 string api_tracks
 string app_name
 string download_tracks
+string playlist_text
